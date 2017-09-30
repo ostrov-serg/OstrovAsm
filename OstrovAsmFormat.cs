@@ -53,6 +53,7 @@ namespace OstrovAsm
         }
     }
 
+
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = "asm.string")]
     [Name("asm.string")]
