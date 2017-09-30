@@ -37,7 +37,6 @@ namespace OstrovAsm
         }
     }
 
-
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = "asm.label")]
     [Name("asm.label")]
