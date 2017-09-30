@@ -37,7 +37,7 @@ namespace OstrovAsm
         public IClassifier GetClassifier(ITextBuffer buffer)
         {
 			OstrovAsm _ostrov = new OstrovAsm(ClassificationRegistry);
-			_ostrov.init(buffer.CurrentSnapshot);
+			_ostrov.Init(buffer.CurrentSnapshot);
             return buffer.Properties.GetOrCreateSingletonProperty<OstrovAsm>(delegate { return _ostrov; });
         }
     }
@@ -56,7 +56,7 @@ namespace OstrovAsm
             classType = registry;
         }
 
-		public void init(ITextSnapshot snapshot)
+		public void Init(ITextSnapshot snapshot)
 		{
 			// FileInfo fi1 = new FileInfo("e:\\1.txt");
 			//StreamWriter sw = fi1.CreateText();
@@ -94,17 +94,17 @@ namespace OstrovAsm
 								}
 								else if(word != null)
 								{
-									if (is_lexem(text, pos, pos1, lex_directives1))
+									if (Is_lexem(text, pos, pos1, lex_directives1))
 									{
-										if (!is_lexem_list(word, 0, word.Length, lex_var)) lex_var.Add(word);
+										if (!Is_lexem_list(word, 0, word.Length, lex_var)) lex_var.Add(word);
 									}
-									else if (is_lexem(text, pos, pos1, lex_directives2))
+									else if (Is_lexem(text, pos, pos1, lex_directives2))
 									{
-										if (!is_lexem_list(word, 0, word.Length, lex_type)) lex_type.Add(word);
+										if (!Is_lexem_list(word, 0, word.Length, lex_type)) lex_type.Add(word);
 									}
 									else
 									{
-										if (text[pos] == '=' && !is_lexem_list(word, 0, word.Length, lex_const)) lex_const.Add(word);
+										if (text[pos] == '=' && !Is_lexem_list(word, 0, word.Length, lex_const)) lex_const.Add(word);
 									}
 									break;
 								}
@@ -114,7 +114,6 @@ namespace OstrovAsm
 						}
 				}
 			}
-			is_first = false;
 		}
         public IList<ClassificationSpan> GetClassificationSpans(SnapshotSpan span)
         {
@@ -178,29 +177,30 @@ namespace OstrovAsm
                         if (pos1 < 0) pos1 = len;
                         if (pos != pos1)
                         {
-                            int offs = ((text[pos] == 'v' || text[pos] == 'V') ? 1 : 0);
                             if (text[pos] >= '0' && text[pos] <= '9') type = classType.GetClassificationType("asm.digit");
-                            else if (is_lexem(text, pos, pos1, lex_instructions)) type = classType.GetClassificationType("asm.instruction");
-                            else if (is_lexem(text, pos, pos1, lex_registersCpu)) type = classType.GetClassificationType("asm.registerCpu");
-                            else if (is_lexem(text, pos, pos1, lex_instructionsFpu)) type = classType.GetClassificationType("asm.instructionFpu");
-                            else if (is_lexem(text, pos + offs, pos1, lex_instructionsExt)) type = classType.GetClassificationType("asm.instructionExt");
-                            else if (is_lexem(text, pos, pos1, lex_directives1))
+                            else if (Is_lexem(text, pos, pos1, lex_instructions)) type = classType.GetClassificationType("asm.instruction");
+                            else if (Is_lexem(text, pos, pos1, lex_registersCpu)) type = classType.GetClassificationType("asm.registerCpu");
+                            else if (Is_lexem(text, pos, pos1, lex_instructionsFpu)) type = classType.GetClassificationType("asm.instructionFpu");
+                            else if (Is_lexem(text, pos, pos1, lex_instructionsExt)) type = classType.GetClassificationType("asm.instructionExt");
+                            else if (Is_lexem(text, pos, pos1, lex_instructionsBmi)) type = classType.GetClassificationType("asm.instructionBmi");
+                            else if (Is_lexem(text, pos, pos1, lex_instructionsSys)) type = classType.GetClassificationType("asm.instructionSys");
+                            else if (Is_lexem(text, pos, pos1, lex_directives1))
                             {
-                                if (word != null && !is_lexem_list(word, 0, word.Length, lex_var)) { lex_var.Add(word); word = null; }
+                                if (word != null && !Is_lexem_list(word, 0, word.Length, lex_var)) { lex_var.Add(word); word = null; }
                                 type = classType.GetClassificationType("asm.directive");
                             }
-                            else if (is_lexem(text, pos, pos1, lex_directives2))
+                            else if (Is_lexem(text, pos, pos1, lex_directives2))
                             {
-                                if (word != null && !is_lexem_list(word, 0, word.Length, lex_type)) { lex_type.Add(word); word = null; }
+                                if (word != null && !Is_lexem_list(word, 0, word.Length, lex_type)) { lex_type.Add(word); word = null; }
                                 type = classType.GetClassificationType("asm.directive");
                             }
-                            else if (is_lexem(text, pos, pos1, lex_directives3)) type = classType.GetClassificationType("asm.directive");
-                            else if (is_lexem(text, pos, pos1, lex_registersExt)) type = classType.GetClassificationType("asm.registerExt");
-                            else if (is_lexem(text, pos, pos1, lex_registersFpu)) type = classType.GetClassificationType("asm.registerFpu");
-                            else if (is_lexem_list(text, pos, pos1, lex_const)) type = classType.GetClassificationType("asm.const");
-                            else if (is_lexem_list(text, pos, pos1, lex_var)) type = classType.GetClassificationType("asm.variable");
-                            else if (is_lexem_list(text, pos, pos1, lex_type)) type = classType.GetClassificationType("asm.type");
-                            else if (is_lexem_list(text, pos, pos1, lex_label)) type = classType.GetClassificationType("asm.label");
+                            else if (Is_lexem(text, pos, pos1, lex_directives3)) type = classType.GetClassificationType("asm.directive");
+                            else if (Is_lexem(text, pos, pos1, lex_registersExt)) type = classType.GetClassificationType("asm.registerExt");
+                            else if (Is_lexem(text, pos, pos1, lex_registersFpu)) type = classType.GetClassificationType("asm.registerFpu");
+                            else if (Is_lexem_list(text, pos, pos1, lex_const)) type = classType.GetClassificationType("asm.const");
+                            else if (Is_lexem_list(text, pos, pos1, lex_var)) type = classType.GetClassificationType("asm.variable");
+                            else if (Is_lexem_list(text, pos, pos1, lex_type)) type = classType.GetClassificationType("asm.type");
+                            else if (Is_lexem_list(text, pos, pos1, lex_label)) type = classType.GetClassificationType("asm.label");
                             else
                             {
                                 if (is_begin && pos1 < len)
@@ -208,7 +208,7 @@ namespace OstrovAsm
                                     word = text.Substring(pos, pos1 - pos);
                                     if (text[pos1] == ':') { lex_label.Add(word); word = null; type = classType.GetClassificationType("asm.label"); }
                                 }
-                                else if (word != null && text[pos] == '=' && !is_lexem_list(word, 0, word.Length, lex_const)) { lex_const.Add(word); word = null; }
+                                else if (word != null && text[pos] == '=' && !Is_lexem_list(word, 0, word.Length, lex_const)) { lex_const.Add(word); word = null; }
                             }
                             if (type != null)
                             {
@@ -232,8 +232,7 @@ namespace OstrovAsm
 		private List<string> lex_var = new List<string>();
 		private List<string> lex_type = new List<string>();
 		private List<string> lex_label = new List<string>();
-		bool is_first = true;
-		private bool is_lexem(string text, int pos, int pos1, string[] arr)
+		private bool Is_lexem(string text, int pos, int pos1, string[] arr)
 		{
 			int len = pos1 - pos;
 			for (int i = 0; i < arr.Length; i++)
@@ -244,7 +243,7 @@ namespace OstrovAsm
 			return false;
 		}
 
-		private bool is_lexem_list(string text, int pos, int pos1, List<string> arr)
+		private bool Is_lexem_list(string text, int pos, int pos1, List<string> arr)
 		{
 			int len = pos1 - pos;
 			for (int i = 0; i < arr.Count; i++)
@@ -257,28 +256,26 @@ namespace OstrovAsm
 
 		private static readonly string[] lex_instructions =
         {
-            "aaa", "aad", "aam", "aas", "adc", "add", "and", "andn", "arpl",
-            "bextr", "blsi", "blsmsk", "blsr", "bswap", "bt", "btc", "btr", "bts", "bzhi",
-            "call", "cbw", "cwde", "cdqe", "clc", "cld", "clflush", "cli", "clts", "cmc", "cmp", "cmpxchg", "cmpxchg8b", "cmpxchg16b", "cpuid", "crc32", "cwd", "cdq", "cqo", "cmps", "cmpsb", "cmpsw", "cmpsd", "cmpsq",
+            "aaa", "aad", "aam", "aas", "adc", "add", "and",
+            "bswap", "bound", "bsf", "bsr", "bt", "btc", "btr", "bts",
+            "call", "cbw", "cwde", "cdqe", "clc", "cld", "cmc", "cmp", "cmpxchg", "cmpxchg8b", "cmpxchg16b", "cpuid", "cwd", "cdq", "cqo", "cmps", "cmpsb", "cmpsw", "cmpsd", "cmpsq",
             "cmova", "cmovae", "cmovb", "cmovbe", "cmovc", "cmove", "cmovg", "cmovge", "cmovl", "cmovle", "cmovna", "cmovnae", "cmovnb", "cmovnbe", "cmovnc", "cmovne", "cmovng", "cmovnge", "cmovnl", "cmovnle", "cmovns", "cmovnz", "cmovs", "cmovz",
             "daa", "das", "dec", "div",
             "enter",
             "hlt",
-            "idiv", "imul", "inc", "in", "int","into","int 3","invd","invlpg","invpcid","iret", "iretd",
-            "jmp",
-            "ja", "jae", "jb", "jbe", "jc", "jcxz", "jecxz", "jrcxz", "je", "jg", "jge", "jl", "jle", "jna", "jnae", "jnb", "jnbe", "jnc", "jne", "jng", "jnge", "jns", "jnz", "js", "jz",
-            "lahf", "lar", "lds", "lss", "les", "lfs", "lgs", "lea", "leave", "lfence", "lgdt", "ligdt", "lldt", "lmsw", "lock", "lods", "lodsb", "lodsw", "lodsd", "lodsq", "loop", "loopz", "loopnz", "lsl", "ltr", "lzcnt",
-            "mfence", "monitor", "mov", "movbe","movs","movsb", "movsw", "movsd", "movsq", "movsx", "movsxd", "movzx", "mul","mwait",
+            "idiv", "imul", "inc",
+            "jmp", "ja", "jae", "jb", "jbe", "jc", "jcxz", "jecxz", "jrcxz", "je", "jg", "jge", "jl", "jle", "jna", "jnae", "jnb", "jnbe", "jnc", "jne", "jng", "jnge", "jns", "jnz", "js", "jz",
+            "lea", "leave", "lock", "lodsb", "lodsw", "lodsd", "lodsq", "loop", "loopz", "loopnz",
+            "mov", "movsb", "movsw", "movsd", "movsq", "movsx", "movsxd", "movzx", "mul", "movnti",
             "neg", "nop", "not",
-            "or", "out",
-            "pause", "pdep", "pext", "pop", "popa", "popad", "popcnt", "popf", "popfd", "popfq", "prefetcht0", "prefetcht1", "prefetcht2", "prefetchnta", "prefetchw", "push", "pusha", "pushad", "pushf", "pushfd", "pushfq",
-            "rcl", "rcr", "rol", "ror", "rdmsr", "rdpmc", "rdrand", "rdtsc", "rdtscp", "rep", "repz", "repnz", "ret", "rorx", "rsm", "retn",
-            "sahf", "sal", "sar", "shl", "shr", "sarx", "shlx", "shrx", "sbb", "scas", "scasb", "scasw", "scasd", "scasq",
+            "or",
+            "pause", "pop", "popa", "popad", "popf", "popfd", "popfq", "push", "pusha", "pushad", "pushf", "pushfd", "pushfq",
+            "rcl", "rcr", "rol", "ror", "rdmsr", "rdpmc", "rdtsc", "rdtscp", "rep", "repz", "repnz", "ret", "retn",
+            "sal", "sar", "shl", "shr", "sbb", "scasb", "scasw", "scasd", "scasq",
             "seta", "setae", "setb", "setbe", "setc", "sete", "setg", "setge", "setl", "setle", "setna", "setnae", "setnb", "setnbe", "setnc", "setne", "setng", "setnge", "setnl", "setnle", "setns", "setnz", "sets", "setz",
-            "sfence", "sgdt", "shld", "shrd", "sidt", "sldt", "smsw", "stc", "std", "sti", "stos","stosb", "stosw", "stosd", "stosq", "sub", "swapgs", "syscall", "sysenter", "sysexit", "sysret",
-            "test", "tzcnt",
-            "wbinvd", "wrfsbase", "wrgsbase", "wrmsr",
-            "xacquire", "xrelease", "xabort", "xadd", "xbegin", "xchg", "xend", "xgetbv", "xlat", "xlatb", "xor", "xrstor", "srstors", "xsave", "xsavec", "xsaveopt", "xsaves", "xsetbv", "xtest"
+            "shld", "shrd", "stc", "std", "stosb", "stosw", "stosd", "stosq", "sub",
+            "test",
+            "xadd", "xchg", "xlat", "xlatb", "xor"
         };
 		private static readonly string[] lex_instructionsFpu =
 		{
@@ -287,60 +284,84 @@ namespace OstrovAsm
 			"fptan", "frndint", "frstor", "fsave", "fnsave", "fscale", "fsin", "fsincos", "fsqrt", "fst", "fstp", "fstcw", "fstenv", "fstsw", "fsub", "fisub", "fsubp", "fsubr", "fisubr", "fsubrp", "ftst", "fucomp", "fucomp", "fucompp", "fxam", "fxch",
 			"fxrstor", "fxsave", "fxtract", "fyl2x", "fyl2xp1"
 		};
+        private static readonly string[] lex_instructionsSys =
+        {
+            "arpl",
+            "clflush", "cli", "clts",
+            "lahf", "lar", "lds", "lss", "les", "lfs", "lgs", "lfence", "lgdt", "ligdt", "lldt", "lmsw", "lsl", "ltr",
+            "in", "int", "into", "invd", "invlpg", "invpcid", "iret", "iretd",
+            "mfence", "monitor", "mwait",
+            "out",
+            "prefetcht0", "prefetcht1", "prefetcht2", "prefetchnta", "prefetchw",
+            "rsm",
+            "sahf", "sfence", "sgdt", "sidt", "sldt", "smsw", "sti", "syscall", "sysenter", "sysexit", "sysret", "swapgs",
+            "wbinvd", "wrfsbase", "wrgsbase", "wrmsr",
+            "xacquire", "xrelease", "xabort", "xbegin", "xend", "xgetbv", "xrstor", "srstors", "xsave", "xsavec", "xsaveopt", "xsaves", "xsetbv", "xtest"
+        };
         private static readonly string[] lex_instructionsExt =
-		{
-			"addpd", "addps", "addsd", "addss", "vaddpd", "vaddps", "vaddsd", "vaddss", "addsubpd", "addsubps", "vaddsubpd", "vaddsubps", "aesdec", "vaesdec", "aesdeclast", "vaesdeclast",
-            "aesenc", "vaesenc", "aesenclast", "vaesenclast", "aesimc", "vaesimc", "aeskeygenassist", "vaeskeygenassist", "andpd", "andps", "vandpd", "vandps", "andnpd", "andnps", "vandnpd", "vandnps",
-            "blendpd", "blendps", "vblendpd", "vblendps", "blendvpd", "blendvps", "vblendbvpd", "vblendvps",
-            "cmppd", "cmpps", "cmpsd", "cmpss", "vcmppd", "vcmpps", "vcmpsd", "vcmpss", "comisd", "comiss", "vcomisd", "vcomiss",
-            "cvtdq2ps", "cvtdq2pd", "cvtpd2dq", "cvtpd2pi", "cvtpd2ps", "cvtpi2pd", "cvtpi2ps", "cvtps2dq", "cvtps2pd", "cvtps2pi", "cvtsd2si", "cvtsd2ss",
-            "cvtsi2sd", "cvtsi2ss", "cvtss2sd", "cvtss2si", "cvttpd2dq", "cvttpd2pi", "cvttps2dq", "cvttps2pi", "cvttsd2si", "cvttss2si",
-            "vcvtdq2ps", "vcvtdq2pd", "vcvtpd2dq", "vcvtpd2pi", "vcvtpd2ps", "vcvtpi2pd", "vcvtpi2ps", "vcvtps2dq", "vcvtps2pd", "vcvtps2pi", "vcvtsd2si", "vcvtsd2ss",
-            "vcvtsi2sd", "vcvtsi2ss", "vcvtss2sd", "vcvtss2si", "vcvttpd2dq", "vcvttpd2pi", "vcvttps2dq", "vcvttps2pi", "vcvttsd2si", "vcvttss2si",
-            "divpd", "divps", "divsd", "divss", "vdivpd", "vdivps", "vdivsd", "vdivss", "dppd", "dpps", "vdppd", "vdpps",
-            "emms", "extractps", "vextractps", "haddpd", "haddps", "vhaddpd", "vhaddps", "lddqu", "vlddqu",
-            "maskmovdqu", "vmaskmovdqu", "maskmovq", "maxpd", "maxps", "maxsd", "maxss", "vmaxpd", "vmaxps", "vmaxsd", "vmaxss", "minpd", "minps", "minsd", "minss", "vminpd", "vminps", "vminsd", "vminss",
-            "movapd", "movaps", "vmovapd", "vmovaps", "movd", "movq", "vmovd", "vmovq", "movddup", "vmovddup", "movdqa", "movdqu", "movdq2q", "vmovdqa", "vmovdqu", "movhlps", "movhpd", "vmovhlps", "vmovhpd",
-            "movhps", "movlhps", "vmovhps", "vmovlhps", "movlpd", "movlps", "vmovlpd", "vmovlps", "movmskpd", "movmskps", "vmovmskpd", "vmosmskps", "movntdqa", "vmovntdqa",
-            "movntdq", "vmovntdq", "movnti", "movntpd", "movntps", "vmovntpd", "vmovntps", "movntq", "movq2dq", "movsd", "vmovsd", "movshdup", "movsldup", "vmovshdup", "vmovsldup", "movss", "vmovss", "movsd", "vmovsd", "movupd", "vmovupd",
-            "movups", "vmovups", "mpsadbw", "vmpsadbw", "mulpd", "mulps", "mulsd", "mulss", "vmulpd", "vmulps", "vmulsd", "vmulss",
-            "orpd", "orps", "vorpd", "vorps", "pabsb", "pabsw", "pabsd", "vpabsb", "vpabsw", "vpabsd", "packsswb", "packssdw", "vpacksswb", "vpackssdw", "packuswb", "packusdw", "vpackuswb", "vpackusdw",
-            "paddb", "paddw", "paddd", "vpaddb", "vpaddw", "vpaddd", "paddq", "vpaddq", "paddsb", "paddsw", "vpaddsb", "vpaddsw", "paddusb", "paddusw", "vpaddusb", "vpaddusw", "palignr", "vpalignr", "pand", "pandn",
-            "vpand", "vpandn", "pagvb", "pagvw", "vpagvb", "vpagvw", "pblendvb", "pblendw", "vpblendvb", "vpblendw", "pclmulqdq", "vpclmulqdq", "pcmpeqb", "pcmpeqw", "pcmpeqd", "pcmpeqq",
-            "vcmpeqb", "vcmpeqw", "vcmpeqd", "vcmpeqq", "pcmpestri", "pcmpestrm", "vpcmpestri", "vpcmpestrm", "pcmpgtb", "pcmpgtw", "pcmpgtd", "pcmpgtq", "vpcmpgtb", "vpcmpgtw", "vpcmpgtd", "vpcmpgtq",
-            "pcmpistri", "pcmpistrm", "vpcmpistri", "vpcmpistrm", "pextrb", "pextrw", "pextrd", "pextrq", "vpextrb", "vpextrw", "vpextrd", "vpextrq", "phaddw", "phaddd", "vphaddw", "vphaddd", "phaddsw", "vphaddsw",
-            "phminposuw", "vphminposuw", "phsubw", "phsubd", "phsubsw", "vphsubw", "vphsubd", "vphsubsw", "pinsrb", "pinsrw", "pinsrd", "pinsrq", "vpinsrb", "vpinsrw", "vpinsrd", "vpinsrq",
-            "pmaddubsw", "vpmaddubsw", "pmaddwd", "vpmaddwd",
-            "pmaxsb", "pmaxsw", "pmaxsd", "pmaxub", "pmaxuw", "pmaxud", "pminsb", "pminsw", "pminsd", "pminub", "pminuw", "pminud",
-            "vpmaxsb", "vpmaxsw", "vpmaxsd", "vpmaxub", "vpmaxuw", "vpmaxud", "vpminsb", "vpminsw", "vpminsd", "vpminub", "vpminuw", "vpminud", "pmovmskb", "vpmovmskb",
-            "pmovsxbw","pmovsxbd","pmovsxbq","pmovsxwd","pmovsxwq","pmovsxdq", "pmovzxbw","pmovzxbd","pmovzxbq","pmovzxwd","pmovzxwq","pmovzxdq",
-            "vpmovsxbw","vpmovsxbd","vpmovsxbq","vpmovsxwd","vpmovsxwq","vpmovsxdq", "vpmovzxbw", "vpmovzxbd", "vpmovzxbq", "vpmovzxwd","vpmovzxwq","vpmovzxdq",
-            "pmuldq", "vpmuldq", "pmulhrsw", "vpmulhrsw", "pmulhw", "pmulhuw", "vpmulhw", "vpmulhuw", "pmulld", "pmullw", "vpmulld", "vpmullw", "pmuludq", "vpmuludq",
-            "por", "vpor",
-            "psadbw", "vpsadbw", "pshufb", "vpshufb",
-            "pshufd", "vpshufd", "pshufhw", "pshuflw", "vpshufhw", "vpshuflw", "pshufw",
-            "psignb", "psignw", "psignd", "vpsignb", "vpsignw", "vpsignd", "pslldq", "vpslldq", "psllw", "pslld", "psllq", "vpsllw", "vpslld", "vpsllq", "psraw", "psrad", "vpsraw", "vpsrad", "psrldq", "vpsrldq",
-            "psrlw", "psrld", "psrlq", "vpsrlw", "vpsrld", "vpsrlq", "psubb", "psubw", "psubd", "psubq", "vpsubb", "vpsubw", "vpsubd", "vpsubq", "psubsb", "psubsw", "psubusb", "psubusw", "vpsubsb", "vpsubsw", "vpsubusb", "vpsubusw",
-            "ptest", "vptest",
-            "punpckhbw", "punpckhwd", "punpckhdq", "punpckhqdq", "punpcklbw", "punpcklwd", "punpckldq", "punpcklqdq",
-            "vpunpckhbw", "vpunpckhwd", "vpunpckhdq", "vpunpckhqdq", "vpunpcklbw", "vpunpcklwd", "vpunpckldq", "vpunpcklqdq",
-            "pxor", "vpxor",
-            "rcpps", "rcpss", "vrcpps", "vrcpss", "roundpd", "roundps", "roundsd", "roundss",  "vroundpd",  "vroundps", "vroundsd", "vroundss", "rsqrtps", "rsqrtss", "vrsqrtps", "vrsqrtss",
-            "shufpd", "shufps", "vshufpd", "vshufps", "sqrtpd", "sqrtps", "sqrtsd", "sqrtss", "vsqrtpd", "vsqrtps", "vsqrtsd", "vsqrtss", "subpd", "subps", "vsubpd", "vsubps", "subsd", "subss", "vsubsd", "vsubss",
-            "ucomisd", "ucomiss", "vucomisd", "vucomiss", "unpcckhpd", "unpcklpd", "unpckhps", "unpcklps", "vunpckhpd", "vunpcklpd", "vunpckhps", "vunpcklps", "xorpd", "xorps", "vxorpd", "vxorps",
+        {
+            // sse
+			"addpd", "addps", "addsd", "addss", "addsubpd", "addsubps", "aesdec", "aesdeclast", "aesenc", "aesenclast", "aesimc", "aeskeygenassist", "andpd", "andps", "andnpd", "andnps",
+            "blendpd", "blendps", "blendvpd", "blendvps",
+            "cmppd", "cmpps", "cmpsd", "cmpss", "comisd", "comiss",
+            "cvtdq2pd", "cvtdq2ps", "cvtpd2dq", "cvtpd2pi", "cvtpd2ps", "cvtpi2pd", "cvtpi2ps", "cvtps2dq", "cvtps2pd", "cvtps2pi", "cvtsd2si", "cvtsd2ss", "cvtsi2sd", "cvtsi2ss", "cvtss2sd", "cvtss2si", "cvttpd2dq", "cvttpd2pi", "cvttps2dq", "cvttps2pi", "cvttsd2si", "cvttss2si",
+            "divpd", "divps", "divsd", "divss", "dppd", "dpps",
+            "extractps", "emms",
+            "haddpd", "haddps","hsubpd", "hsubps",
+            "insertps",
+            "lddqu", "ldmxcsr",
+            "maskmovdqu", "maskmovq", "maxpd", "maxps", "maxsd", "maxss", "minpd", "minps", "minsd", "minss", "movapd", "movaps", "movd", "movq", "movddup", "movdqa", "movdqu", "movdq2q", "movhlps", "movhpd", "movhps",
+            "movlhps", "movlpd", "movlps", "movmskpd", "movmskps", "movntdqa", "movntdq", "movntpd", "movntps", "movntq", "movq2dq", "movsd", "movshdup", "movsldup", "movss", "movupd", "movups", "mpsadbw", "mulpd", "mulps", "mulsd", "mulss",
+            "orpd", "orps",
+            "pabsb", "pabsw", "pabsd", "packsswb", "packssdw", "packuswb", "packusdw", "paddb", "paddw", "paddd", "paddq", "paddsb", "paddsw", "paddusb", "paddusw", "palignr", "pand", "pandn", "pagvb", "pagvw",
+            "pblendvb", "pblendw", "pclmulqdq", "pcmpeqb", "pcmpeqw", "pcmpeqd", "pcmpeqq", "pcmpestri", "pcmpestrm", "pcmpgtb", "pcmpgtw", "pcmpgtd", "pcmpgtq", "pcmpistri", "pcmpistrm", "pextrb", "pextrw", "pextrd", "pextrq", "phaddw", "phaddd", "phaddsw",
+            "phminposuw", "phsubw", "phsubd", "phsubsw", "pinsrb", "pinsrw", "pinsrd", "pinsrq", "pmaddubsw", "pmaddwd", "pmaxsb", "pmaxsw", "pmaxsd", "pmaxub", "pmaxuw", "pmaxud", "pminsb", "pminsw", "pminsd",
+            "pminub", "pminuw", "pminud", "pmovmskb", "pmovsxbw","pmovsxbd","pmovsxbq","pmovsxwd","pmovsxwq","pmovsxdq", "pmovzxbw","pmovzxbd","pmovzxbq","pmovzxwd","pmovzxwq","pmovzxdq", "pmuldq", "pmulhrsw", "pmulhw", "pmulhuw", "pmulld", "pmullw", "pmuludq", "por",
+            "psadbw", "pshufb", "pshufd", "pshufhw", "pshuflw", "pshufw",
+            "psignb", "psignw", "psignd", "pslldq", "psllw", "pslld", "psllq", "psraw", "psrad", "psrldq", "psrlw", "psrld", "psrlq", "psubb", "psubw", "psubd", "psubq", "psubsb", "psubsw", "psubusb", "psubusw", "ptest",
+            "punpckhbw", "punpckhwd", "punpckhdq", "punpckhqdq", "punpcklbw", "punpcklwd", "punpckldq", "punpcklqdq", "pxor",
+            "rcpps", "rcpss", "roundpd", "roundps", "roundsd", "roundss", "rsqrtps", "rsqrtss",
+            "shufpd", "shufps", "sqrtpd", "sqrtps", "sqrtsd", "sqrtss", "subpd", "subps", "subsd", "subss",
+            "ucomisd", "ucomiss", "unpckhpd", "unpcklpd", "unpckhps", "unpcklps",
+            "xorpd", "xorps",
+            // avx 1.0
+			"vaddpd", "vaddps", "vaddsd", "vaddss", "vaddsubpd", "vaddsubps", "vaesdec", "vaesdeclast", "vaesenc", "vaesenclast", "vaesimc", "vaeskeygenassist", "vandpd", "vandps", "vandnpd", "vandnps",
+            "vblendpd", "vblendps", "vblendvpd", "vblendvps",
+            "vcmppd", "vcmpps", "vcmpsd", "vcmpss", "vcomisd", "vcomiss",
+            "vcvtdq2pd", "vcvtdq2ps", "vcvtpd2dq", "vcvtpd2ps", "vcvtpi2pd", "vcvtps2dq", "vcvtps2pd", "vcvtsd2si", "vcvtsd2ss", "vcvtsi2sd", "vcvtsi2ss", "vcvtss2sd", "vcvtss2si", "vcvttpd2dq", "vcvttps2dq", "vcvttsd2si", "vcvttss2si",
+            "vdivpd", "vdivps", "vdivsd", "vdivss", "vdppd", "vdpps",
+            "vextractps",
+            "vhaddpd", "vhaddps","vhsubpd", "vhsubps",
+            "vinsertps",
+            "vlddqu", "vldmxcsr",
+            "vmaskmovdqu", "maskmovq", "vmaxpd", "vmaxps", "vmaxsd", "vmaxss", "vminpd", "vminps", "vminsd", "vminss", "vmovapd", "vmovaps", "vmovd", "vmovq", "vmovddup", "vmovdqa", "vmovdqu", "vmovhlps", "vmovhpd", "vmovhps",
+            "vmovlhps", "vmovlpd", "vmovlps", "vmovmskpd", "vmovmskps", "vmovntdqa", "vmovntdq", "vmovntpd", "vmovntps", "vmovsd", "vmovshdup", "vmovsldup", "vmovss", "vmovupd", "vmovups", "vmpsadbw", "vmulpd", "vmulps", "vmulsd", "vmulss",
+            "vorpd", "vorps",
+            "vpabsb", "vpabsw", "vpabsd", "vpacksswb", "vpackssdw", "vpackuswb", "vpackusdw", "vpaddb", "vpaddw", "vpaddd", "vpaddq", "vpaddsb", "vpaddsw", "vpaddusb", "vpaddusw", "vpalignr", "vpand", "vpandn", "vpagvb", "vpagvw",
+            "vpblendvb", "vpblendw", "vpclmulqdq", "vpcmpeqb", "vpcmpeqw", "vpcmpeqd", "vpcmpeqq", "vpcmpestri", "vpcmpestrm", "vpcmpgtb", "vpcmpgtw", "vpcmpgtd", "vpcmpgtq", "vpcmpistri", "vpcmpistrm", "vpextrb", "vpextrw", "vpextrd",
+            "vpextrq", "vphaddw", "vphaddd", "vphaddsw", "vphminposuw", "vphsubw", "vphsubd", "vphsubsw", "vpinsrb", "vpinsrw", "vpinsrd", "vpinsrq", "vpmaddubsw", "vpmaddwd", "vpmaxsb", "vpmaxsw", "vpmaxsd", "vpmaxub", "vpmaxuw",
+            "vpmaxud", "vpminsb", "vpminsw", "vpminsd", "vpminub", "vpminuw", "vpminud", "vpmovmskb", "vpmovsxbw", "vpmovsxbd", "vpmovsxbq", "vpmovsxwd", "vpmovsxwq", "vpmovsxdq", "vpmovzxbw", "vpmovzxbd", "vpmovzxbq", "vpmovzxwd",
+            "vpmovzxwq", "vpmovzxdq", "vpmuldq", "vpmulhrsw", "vpmulhw", "vpmulhuw", "vpmulld", "vpmullw", "vpmuludq", "vpor", "vpsadbw", "vpshufb", "vpshufd", "vpshufhw", "vpshuflw", "vpsignb", "vpsignw", "vpsignd",
+            "vpslldq", "vpsllw", "vpslld", "vpsllq", "vpsraw", "vpsrad", "vpsrldq", "vpsrlw", "vpsrld", "vpsrlq", "vpsubb", "vpsubw", "vpsubd", "vpsubq", "vpsubsb", "vpsubsw", "vpsubusb", "vpsubusw", "vptest", "vpunpckhbw",
+            "vpunpckhwd", "vpunpckhdq", "vpunpckhqdq", "vpunpcklbw", "vpunpcklwd", "vpunpckldq", "vpunpcklqdq", "vpxor", "vrcpps", "vrcpss", "vroundpd", "vroundps", "vroundsd", "vroundss", "vrsqrtps", "vrsqrtss", "vshufpd", "vshufps",
+            "vsqrtpd", "vsqrtps", "vsqrtsd", "vsqrtss", "vsubpd", "vsubps", "vsubsd", "vsubss", "vucomisd", "vucomiss", "vunpckhpd", "vunpcklpd", "vunpckhps", "vunpcklps", "vxorpd", "vxorps",
+            // avx 2.0
             "vbroadcastss", "vbroadcastsd", "vbroadcastf128", "vcvtph2ps", "vcvtps2ph", "vextractf128", "vextracti128", "vgatherdpd", "vgatgerqpd", "vgatherdps", "vgatherqps", "vgatherdd", "vgatherqd", "vgatherdq", "vgatherqq",
             "vinsertf128", "vinserti128", "vmaskmovps", "vmaskmovpd", "vpblendd", "vpbroadcastb", "vpbroadcastw", "vpbroadcastd", "vpbroadcasrq", "vbroadcasti128", "vpermd", "vpermq", "vpermpd", "vpermps",
             "vperm2i128", "vperm2f128", "vpermilpd", "vpermilps", "vpmaskmovd", "vpmaskmovq", "vpsllvd", "vpsllvq", "vtestpd", "vtestps", "vzeroall", "vzeroupper", "vpsravd", "vpsrlvd", "vpsrlvq",
             // fma
             "vfmadd132pd", "vfmadd213pd", "vfmadd231pd", "vfmadd132ps", "vfmadd213ps", "vfmadd231ps", "vfmadd132sd", "vfmadd213sd", "vfmadd231sd", "vfmadd132ss", "vfmadd213ss", "vfmadd231ss",
             "vfnmadd132pd", "vfnmadd213pd", "vfnmadd231pd", "vfnmadd132ps", "vfnmadd213ps", "vfnmadd231ps", "vfnmadd132sd", "vfnmadd213sd", "vfnmadd231sd", "vfnmadd132ss", "vfnmadd213ss", "vfnmadd231ss",
-            "vfmaddsub132pd", "vfmaddsub213pd", "vfmaddsub231pd", "vfmaddsub132ps", "vfmaddsub213ps", "vfmaddsub231ps", "vfmaddsub132sd", "vfmaddsub213sd", "vfmaddsub231sd", "vfmaddsub132ss", "vfmaddsub213ss", "vfmaddsub231ss",
+            "vfmsub132pd", "vfmsub213pd", "vfmsub231pd", "vfmsub132ps", "vfmsub213ps", "vfmsub231ps", "vfmsub132sd", "vfmsub213sd", "vfmsub231sd", "vfmsub132ss", "vfmsub213ss", "vfmsub231ss",
             "vfnmsub132pd", "vfnmsub213pd", "vfnmsub231pd", "vfnmsub132ps", "vfnmsub213ps", "vfnmsub231ps", "vfnmsub132sd", "vfnmsub213sd", "vfnmsub231sd", "vfnmsub132ss", "vfnmsub213ss", "vfnmsub231ss",
-            "vfnmsub132pd", "vfmsub213pd", "vfmsub231pd", "vfmsub132ps", "vfmsub213ps", "vfmsub231ps", "vfmsub132sd", "vfmsub213sd", "vfmsub231sd", "vfmsub132ss", "vfmsub213ss", "vfmsub231ss",
-            "vfmsubadd132pd", "vfmsubadd213pd", "vfmsubadd231pd", "vfmsubadd132ps", "vfmsubadd213ps", "vfmsubadd231ps", "vfmsubadd132sd", "vfmsubadd213sd", "vfmsubadd231sd", "vfmsubadd132ss", "vfmsubadd213ss", "vfmsubadd231ss",
-            // avx2.0
-            "bextr", "blsi", "blmsk", "blsr", "bzhi", "lzcnt", "movbe", "mulx", "pdep", "pext", "popcnt", "rdrand", "rdseed", "rorx", "sarx", "shlx", "shrx", "tzcnt", "andn"
-		};
+            "vfmaddsub132pd", "vfmaddsub213pd", "vfmaddsub231pd", "vfmaddsub132ps", "vfmaddsub213ps", "vfmaddsub231ps",
+            "vfmsubadd132pd", "vfmsubadd213pd", "vfmsubadd231pd", "vfmsubadd132ps", "vfmsubadd213ps", "vfmsubadd231ps",
+        };
+        private static readonly string[] lex_instructionsBmi =
+        {
+            // bmi1, bmi2
+            "bextr", "blsi", "blmsk", "blsr", "bzhi", "lzcnt", "mulx", "pdep", "pext", "popcnt", "rdrand", "rdseed", "rorx", "sarx", "shlx", "shrx", "tzcnt", "andn", "movbe", "crc32"
+        };
         private static readonly string[] lex_registersCpu =
         {
             "rax", "eax", "ax", "ah", "al", "rcx", "ecx", "cx", "ch", "cl", "rbx", "ebx", "bx", "bh", "bl",

@@ -47,9 +47,17 @@ namespace OstrovAsm
 		[Name("asm.instructionFpu")]
 		internal static ClassificationTypeDefinition AsmInstructionFpuDefinition = null;
 
-		[Export(typeof(ClassificationTypeDefinition))]
-		[Name("asm.instructionExt")]
-		internal static ClassificationTypeDefinition AsmInstructionExtDefinition = null;
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name("asm.instructionExt")]
+        internal static ClassificationTypeDefinition AsmInstructionExtDefinition = null;
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name("asm.instructionSys")]
+        internal static ClassificationTypeDefinition AsmInstructionSysDefinition = null;
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name("asm.instructionBmi")]
+        internal static ClassificationTypeDefinition AsmInstructionBmiDefinition = null;
 
         [Export(typeof(ClassificationTypeDefinition))]
         [Name("asm.registerCpu")]

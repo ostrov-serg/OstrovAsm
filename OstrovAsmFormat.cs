@@ -174,6 +174,36 @@ namespace OstrovAsm
     }
 
     [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = "asm.instructionBmi")]
+    [Name("asm.instructionBmi")]
+    [UserVisible(true)]
+    [Order(Before = Priority.Default)]
+    internal sealed class AsmEditorInstructionBmiFormat : ClassificationFormatDefinition
+    {
+        public AsmEditorInstructionBmiFormat()
+        {
+            this.DisplayName = "Ассемблер - инструкции bmi";
+            this.ForegroundColor = Colors.AliceBlue;
+            this.BackgroundColor = Color.FromRgb(40, 40, 40);
+        }
+    }
+
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = "asm.instructionSys")]
+    [Name("asm.instructionSys")]
+    [UserVisible(true)]
+    [Order(Before = Priority.Default)]
+    internal sealed class AsmEditorInstructionSysFormat : ClassificationFormatDefinition
+    {
+        public AsmEditorInstructionSysFormat()
+        {
+            this.DisplayName = "Ассемблер - системные инструкции";
+            this.ForegroundColor = Colors.BurlyWood;
+            this.BackgroundColor = Color.FromRgb(40, 40, 40);
+        }
+    }
+
+    [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = "asm.registerCpu")]
     [Name("asm.registerCpu")]
     [UserVisible(true)]
